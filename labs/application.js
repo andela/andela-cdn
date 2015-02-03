@@ -9,7 +9,7 @@
 
   AndeLabs.factory('Refs', ['$rootScope',
     function($rootScope) {
-      var rootRef = new Firebase("https://andeLabs-prod.firebaseio.com/");
+      var rootRef = new Firebase("https://andelabs-prod.firebaseio.com/");
 
       var uid = window.localStorage.getItem("labUid");
       while(!uid) {
