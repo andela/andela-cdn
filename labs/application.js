@@ -9,7 +9,7 @@
 
   AndeLabs.factory('Refs', ['$rootScope',
     function($rootScope) {
-      var rootRef = new Firebase("https://andelabs-prod.firebaseio.com/");
+      var rootRef = new Firebase("https://andelabs-dev.firebaseio.com/");
 
       var uid = window.localStorage.getItem("labUid");
       while(!uid) {
@@ -24,7 +24,7 @@
         user: userRef,
         started: userRef.child('started_labs'),
         completed: userRef.child('completed_labs'),
-        session: rootRef.child('sessions').child(uid).child(LabSlug),
+        session: rootRef.child('sessions').child(uid).child(LabSlug)
       };
   }]);
 
@@ -93,6 +93,7 @@
             });
           }
         });
+
       },
       reportTries: function(cb) {
         var uid = $rootScope.uid;
