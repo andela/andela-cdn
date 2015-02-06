@@ -37,7 +37,7 @@
             cb(snap.val());
           }
           else {
-            alert('Invalid `user-id`\n\nPlease, sign up at AndeLabs and get a valid `user-id`');
+            alert('Invalid `user-id`\n\nPlease, sign up at AndeLabs and get a valid `user-id`.\n\nAnd reload the page.');
             self.logout();
           }
         });
@@ -49,7 +49,6 @@
       logout: function() {
         window.localStorage.removeItem('labUid');
         delete $rootScope.uid;
-        window.location.reload();
         return false;
       }
     };
