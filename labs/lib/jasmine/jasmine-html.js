@@ -258,7 +258,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       }
 
       //Report to AndeLabs
-      if(specsExecuted > 0 && specsExecuted - failureCount === specsExecuted) {
+      if(specsExecuted - failureCount === totalSpecsDefined) {
         console.log('Lab completed');
         Reporter.reportComplete();
       }
