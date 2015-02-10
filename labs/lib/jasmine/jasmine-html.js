@@ -262,6 +262,10 @@ jasmineRequire.HtmlReporter = function(j$) {
         console.log('Lab completed');
         Reporter.reportComplete();
       }
+      else {
+        //report failure by counting tries
+        Reporter.reportTries();
+      }
       //AndeLabs report done
       
     //end jasmineDone  
