@@ -24,7 +24,7 @@
         user: userRef,
         started: userRef.child('started_labs'),
         completed: userRef.child('completed_labs'),
-        session: rootRef.child('sessions').child(uid).child(LabSlug)
+        session: rootRef.child('sessions').child(uid).child(LabSlug),
       };
   }]);
 
@@ -91,6 +91,19 @@
                 });
               }
             });
+          }
+        });
+      },
+      reportTries: function(cb) {
+        var uid = $rootScope.uid;
+        var triesRef = Refs.session.child('tries');
+        triesRef.once(value, function(snap) {
+          if(!snap.val()) {
+            triesRef.set(0);
+          }
+          else {
+            var newTries = Number(snap.val()) + 1;
+            triesRef.set(newTries);
           }
         });
       }
