@@ -54,7 +54,8 @@ jasmineRequire.HtmlReporter = function(j$) {
       htmlReporterMain = createDom('div', {className: 'jasmine_html-reporter'},
         createDom('div', {className: 'banner'},
           createDom('a', {className: 'title', href: 'http://jasmine.github.io/', target: '_blank'}),
-          createDom('span', {className: 'version'}, j$.version)
+          createDom('span', {className: 'version'}, '')
+          //j$.version
         ),
         createDom('ul', {className: 'symbol-summary'}),
         createDom('div', {className: 'alert'}),
@@ -267,8 +268,8 @@ jasmineRequire.HtmlReporter = function(j$) {
         Reporter.reportTries();
       }
       //AndeLabs report done
-      
-    //end jasmineDone  
+
+    //end jasmineDone
     };
 
     return this;
@@ -280,7 +281,7 @@ jasmineRequire.HtmlReporter = function(j$) {
     function clearPrior() {
       // return the reporter
       var oldReporter = find('');
-      
+
       if(oldReporter) {
         getContainer().removeChild(oldReporter);
       }
