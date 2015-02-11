@@ -93,7 +93,6 @@
             });
           }
         });
-
       },
       reportTries: function(cb) {
         var uid = $rootScope.uid;
