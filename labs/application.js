@@ -2,6 +2,8 @@
   'use strict';
 
   window.AndeLabs = angular.module('AndeLabs', []);
+
+
   AndeLabs.run(['$rootScope','Reporter', function($rootScope, Reporter) {
     $rootScope._ = window._;
     window.Reporter = Reporter;
@@ -38,6 +40,7 @@
           }
           else {
             alert('Invalid `user-id`\n\nPlease, sign up at AndeLabs and get a valid `user-id`.\n\nAnd reload the page.');
+
             self.logout();
           }
         });
@@ -55,7 +58,6 @@
   }]);
 
   AndeLabs.factory('Reporter', ['Refs', '$rootScope', function(Refs, $rootScope) {
-
     return {
       reportComplete: function(cb) {
         //remove from started_labs
