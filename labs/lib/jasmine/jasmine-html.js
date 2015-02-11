@@ -264,6 +264,7 @@ jasmineRequire.HtmlReporter = function(j$) {
         Reporter.reportComplete();
       }
       else {
+        console.log('Failed: ' + failureCount);
         //report failure by counting tries
         Reporter.reportTries();
       }
