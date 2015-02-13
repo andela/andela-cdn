@@ -1,10 +1,8 @@
 (function(){
   'use strict';
+  var AndeLabs = angular.module('AndeLabs', []);
+  AndeLabs.run(['$rootScope', 'Reporter', function($rootScope) {
 
-  window.AndeLabs = angular.module('AndeLabs', []);
-  AndeLabs.run(['$rootScope','Reporter', function($rootScope, Reporter) {
-    $rootScope._ = window._;
-    window.Reporter = Reporter;
   }]);
 
   AndeLabs.factory('Refs', ['$rootScope',
@@ -57,6 +55,7 @@
   AndeLabs.factory('Reporter', ['Refs', '$rootScope', function(Refs, $rootScope) {
 
     return {
+
       reportComplete: function(cb) {
         //remove from started_labs
         var uid = $rootScope.uid;
@@ -94,9 +93,9 @@
           }
         });
       },
+
       reportTries: function(cb) {
         var uid = $rootScope.uid;
-
         var triesRef = Refs.session.child('tries');
         triesRef.once('value', function(snap) {
           var count = snap.val();
@@ -114,23 +113,22 @@
 
   AndeLabs.controller('LabCtrl', ['Refs', 'Authentication','Reporter','$scope', '$rootScope',
     function(Refs, Authentication, Reporter, $scope, $rootScope) {
+      $rootScope.$watch('uid', function(newValue) {
+        if(newValue) {
+          Authentication.auth($rootScope.uid, function(authData) {
+            if(authData) {
+              htmlReporter.initialize(Reporter);
+              env.execute();
+            }
+            console.log($rootScope.uid, 'reporter initialized');
+          });
+        }
+      });
 
-    $rootScope.$watch('uid', function(newValue) {
-      if(newValue) {
-        Authentication.auth($rootScope.uid, function(authData) {
-          if(authData) {
-            htmlReporter.initialize();
-            env.execute();
-          }
-          console.log($rootScope.uid, 'reporter initialized');
-        });
-      }
-    });
-
-    $scope.logout = function() {
-     if(confirm('Are you sure you want to end your session?')) {
-      Authentication.logout();
-     }
-    };
+      $scope.logout = function() {
+       if(confirm('Are you sure you want to end your session?')) {
+        Authentication.logout();
+       }
+      };
   }]);
 })();
