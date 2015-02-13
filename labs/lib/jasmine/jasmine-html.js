@@ -34,6 +34,7 @@ jasmineRequire.HtmlReporter = function(j$) {
     elapsed: function() { return 0; }
   };
 
+
   function HtmlReporter(options) {
     var env = options.env || {},
       getContainer = options.getContainer,
@@ -49,7 +50,10 @@ jasmineRequire.HtmlReporter = function(j$) {
       symbols,
       failedSuites = [];
 
-    this.initialize = function() {
+    var Reporter;
+
+    this.initialize = function(_Reporter_) {
+      Reporter = _Reporter_;
       clearPrior();
       htmlReporterMain = createDom('div', {className: 'jasmine_html-reporter'},
         createDom('div', {className: 'banner'},
@@ -264,11 +268,10 @@ jasmineRequire.HtmlReporter = function(j$) {
         Reporter.reportComplete();
       }
       else {
-        //report failure by counting tries
-        Reporter.reportTries();
+          //report failure by counting tries
+          Reporter.reportTries();
       }
       //AndeLabs report done
-
     //end jasmineDone
     };
 
