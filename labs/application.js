@@ -1,11 +1,8 @@
 (function(){
   'use strict';
+  var AndeLabs = angular.module('AndeLabs', []);
+  AndeLabs.run(['$rootScope', 'Reporter', function($rootScope) {
 
-  window.AndeLabs = angular.module('AndeLabs', []);
-
-  AndeLabs.run(['$rootScope','Reporter', function($rootScope, Reporter) {
-    $rootScope._ = window._;
-    window.Reporter = Reporter;
   }]);
 
   AndeLabs.factory('Refs', ['$rootScope',
@@ -38,7 +35,8 @@
             cb(snap.val());
           }
           else {
-            alert('Invalid `user-id`\n\nPlease, sign up at AndeLabs and get a valid `user-id`');
+            alert('Invalid `user-id`\n\nPlease, sign up at AndeLabs and get a valid `user-id`.\n\nAnd reload the page.');
+
             self.logout();
           }
         });
@@ -50,15 +48,14 @@
       logout: function() {
         window.localStorage.removeItem('labUid');
         delete $rootScope.uid;
-        window.location.reload();
         return false;
       }
     };
   }]);
 
   AndeLabs.factory('Reporter', ['Refs', '$rootScope', function(Refs, $rootScope) {
-
     return {
+
       reportComplete: function(cb) {
         //remove from started_labs
         var uid = $rootScope.uid;
@@ -96,15 +93,18 @@
           }
         });
       },
+
       reportTries: function(cb) {
         var uid = $rootScope.uid;
+
         var triesRef = Refs.session.child('tries');
-        triesRef.once(value, function(snap) {
-          if(!snap.val()) {
+        triesRef.once('value', function(snap) {
+          var count = snap.val();
+          if(!count && count !== 0) {
             triesRef.set(0);
           }
           else {
-            var newTries = Number(snap.val()) + 1;
+            var newTries = Number(count) + 1;
             triesRef.set(newTries);
           }
         });
@@ -114,23 +114,22 @@
 
   AndeLabs.controller('LabCtrl', ['Refs', 'Authentication','Reporter','$scope', '$rootScope',
     function(Refs, Authentication, Reporter, $scope, $rootScope) {
+      $rootScope.$watch('uid', function(newValue) {
+        if(newValue) {
+          Authentication.auth($rootScope.uid, function(authData) {
+            if(authData) {
+              htmlReporter.initialize(Reporter);
+              env.execute();
+            }
+            console.log($rootScope.uid, 'reporter initialized');
+          });
+        }
+      });
 
-    $rootScope.$watch('uid', function(newValue) {
-      if(newValue) {
-        Authentication.auth($rootScope.uid, function(authData) {
-          if(authData) {
-            htmlReporter.initialize();
-            env.execute();
-          }
-          console.log($rootScope.uid, 'reporter initialized');
-        });
-      }
-    });
-
-    $scope.logout = function() {
-     if(confirm('Are you sure you want to end your session?')) {
-      Authentication.logout();
-     }
-    };
+      $scope.logout = function() {
+       if(confirm('Are you sure you want to end your session?')) {
+        Authentication.logout();
+       }
+      };
   }]);
 })();
