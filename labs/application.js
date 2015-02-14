@@ -7,28 +7,22 @@
 
   AndeLabs.factory('Refs', ['$rootScope',
     function($rootScope) {
-      var rootRef = new Firebase("https://andelabs-dev.firebaseio.com/");
-
       var uid = window.localStorage.getItem("labUid");
       while(!uid) {
         uid = prompt('Please enter your labs uid');
         window.localStorage.setItem("labUid", uid);
       }
       $rootScope.uid = uid;
-      var userRef = rootRef.child('users').child(uid);
       return {
-        root: rootRef,
-        queue: rootRef.child('queue'),
-        user: userRef,
-        started: userRef.child('started_labs'),
-        completed: userRef.child('completed_labs'),
-        session: rootRef.child('sessions').child(uid).child(LabSlug)
+
       };
   }]);
 
   AndeLabs.factory('Authentication', ['Reporter', '$rootScope', '$http', function(Reporter, $rootScope, $http) {
+
     return {
       auth: function (uid, cb) {
+        var self = this;
         $http.get(Reporter.path + 'users/' + uid)
         .success(function(res) {
           console.log(res);
@@ -36,11 +30,12 @@
         })
         .error(function(err) {
           console.log(err);
+          alert('Invalid `user-id`\n\nPlease, sign up at AndeLabs and get a valid `user-id`.\n\nAnd reload the page.');
+          self.logout();
         });
       },
       login: function() {
-        Refs.root.authWithOAuthPopup('google', function(err,data) {
-        }, {remember: true, scope: 'email'});
+
       },
       logout: function() {
         window.localStorage.removeItem('labUid');
@@ -50,9 +45,9 @@
     };
   }]);
 
-  AndeLabs.factory('Reporter', ['Refs', '$rootScope', '$http', function(Refs, $rootScope, $http) {
+  AndeLabs.factory('Reporter', ['$rootScope', '$http', function($rootScope, $http) {
     return {
-      path: 'http://andelabs-staging.herokuapp.com/api/',
+      path: 'http://localhost:5555/api/',
       reportComplete: function(cb) {
         $http.post(this.path + 'labs/completed/' + LabSlug, {uid: $rootScope.uid, categoryId: CategoryId})
         .success(function(res) {
