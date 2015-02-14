@@ -1,7 +1,7 @@
 (function(){
   'use strict';
   var AndeLabs = angular.module('AndeLabs', []);
-  AndeLabs.run(['$rootScope', 'Reporter', function($rootScope) {
+  AndeLabs.run(['$rootScope', 'Reporter', '$http', function($rootScope, Reporter, $http) {
 
   }]);
 
@@ -26,19 +26,16 @@
       };
   }]);
 
-  AndeLabs.factory('Authentication', ['Refs', '$rootScope', function(Refs, $rootScope) {
+  AndeLabs.factory('Authentication', ['Reporter', '$rootScope', '$http', function(Reporter, $rootScope, $http) {
     return {
       auth: function (uid, cb) {
-        var self = this;
-        Refs.user.once('value', function(snap) {
-          if(snap.val()) {
-            cb(snap.val());
-          }
-          else {
-            alert('Invalid `user-id`\n\nPlease, sign up at AndeLabs and get a valid `user-id`.\n\nAnd reload the page.');
-
-            self.logout();
-          }
+        $http.get(Reporter.path + 'users/' + uid)
+        .success(function(res) {
+          console.log(res);
+          cb(res);
+        })
+        .error(function(err) {
+          console.log(err);
         });
       },
       login: function() {
@@ -53,60 +50,26 @@
     };
   }]);
 
-  AndeLabs.factory('Reporter', ['Refs', '$rootScope', function(Refs, $rootScope) {
+  AndeLabs.factory('Reporter', ['Refs', '$rootScope', '$http', function(Refs, $rootScope, $http) {
     return {
-
+      path: 'http://andelabs-staging.herokuapp.com/api/',
       reportComplete: function(cb) {
-        //remove from started_labs
-        var uid = $rootScope.uid;
-        Refs.started.once('value', function(startedSnap) {
-          var startedArray = startedSnap.val();
-          if(startedArray) {
-            var labIndex = startedArray.indexOf(LabSlug);
-            var completedLab = startedArray.splice(labIndex, 1);
-            Refs.started.set(startedArray, function(error) {
-              if(!error) {
-                //add to completed labs
-                Refs.completed.once('value', function(completedSnap) {
-                  var completedArray = [];
-                  if(completedSnap.val()) {
-                    completedArray = completedSnap.val();
-                  }
-                  completedArray.push(completedLab[0]);
-                  Refs.completed.set(completedArray);
-                });
-              }
-            });
-            //add completed timestamp to sessions
-            Refs.session.child('completed_at').set(Firebase.ServerValue.TIMESTAMP, function(err) {
-              if(!err) {
-                //write to queue
-                Refs.queue.push({
-                  organization_id: 'andela',
-                      metric_id: CategoryId,
-                      created_at: Firebase.ServerValue.TIMESTAMP,
-                      user_id: uid,
-                      value: 1,
-                });
-              }
-            });
-          }
+        $http.post(this.path + 'labs/completed/' + LabSlug, {uid: $rootScope.uid, categoryId: CategoryId})
+        .success(function(res) {
+          console.log(res);
+        })
+        .error(function(err) {
+          console.log(err);
         });
       },
 
       reportTries: function(cb) {
-        var uid = $rootScope.uid;
-
-        var triesRef = Refs.session.child('tries');
-        triesRef.once('value', function(snap) {
-          var count = snap.val();
-          if(!count && count !== 0) {
-            triesRef.set(0);
-          }
-          else {
-            var newTries = Number(count) + 1;
-            triesRef.set(newTries);
-          }
+        $http.post(this.path + 'labs/attempt/' + LabSlug, {uid: $rootScope.uid})
+        .success(function(res) {
+          console.log(res);
+        })
+        .error(function(err) {
+          console.log(err);
         });
       }
     };
