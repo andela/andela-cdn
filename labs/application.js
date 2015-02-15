@@ -47,7 +47,7 @@
 
   AndeLabs.factory('Reporter', ['$rootScope', '$http', function($rootScope, $http) {
     return {
-      path: 'http://localhost:5555/api/',
+      path: 'http://labs.andela.co/api/',
       reportComplete: function(cb) {
         $http.post(this.path + 'labs/completed/' + LabSlug, {uid: $rootScope.uid, categoryId: CategoryId})
         .success(function(res) {
