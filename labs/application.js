@@ -75,7 +75,6 @@
               htmlReporter.initialize(Reporter);
               env.execute();
             }
-            console.log($rootScope.uid, 'reporter initialized');
           });
         }
       });
