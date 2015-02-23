@@ -25,11 +25,9 @@
         var self = this;
         $http.get(Reporter.path + 'users/' + uid)
         .success(function(res) {
-          console.log(res);
           cb(res);
         })
         .error(function(err) {
-          console.log(err);
           alert('Invalid `user-id`\n\nPlease, sign up at AndeLabs and get a valid `user-id`.\n\nAnd reload the page.');
           self.logout();
         });
@@ -51,7 +49,6 @@
       reportComplete: function(cb) {
         $http.post(this.path + 'labs/completed/' + LabSlug, {uid: $rootScope.uid, categoryId: CategoryId})
         .success(function(res) {
-          console.log(res);
         })
         .error(function(err) {
           console.log(err);
@@ -61,7 +58,6 @@
       reportTries: function(cb) {
         $http.post(this.path + 'labs/attempt/' + LabSlug, {uid: $rootScope.uid})
         .success(function(res) {
-          console.log(res);
         })
         .error(function(err) {
           console.log(err);
@@ -79,7 +75,6 @@
               htmlReporter.initialize(Reporter);
               env.execute();
             }
-            console.log($rootScope.uid, 'reporter initialized');
           });
         }
       });
