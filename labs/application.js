@@ -30,7 +30,7 @@
         })
         .error(function(err) {
           console.log(err);
-          alert('Invalid `user-id`\n\nPlease, sign up at AndeLabs and get a valid `user-id`.\n\nAnd reload the page.');
+          alert(err);
           self.logout();
         });
       },
